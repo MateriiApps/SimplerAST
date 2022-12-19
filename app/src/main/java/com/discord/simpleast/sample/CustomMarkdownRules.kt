@@ -6,14 +6,14 @@ import android.graphics.Typeface
 import android.text.style.*
 import androidx.annotation.StyleRes
 import com.discord.simpleast.R
-import com.discord.simpleast.code.CodeRules
-import com.discord.simpleast.code.CodeStyleProviders
-import com.discord.simpleast.core.node.Node
-import com.discord.simpleast.core.node.StyleNode
-import com.discord.simpleast.core.parser.ParseSpec
-import com.discord.simpleast.core.parser.Parser
-import com.discord.simpleast.core.parser.Rule
-import com.discord.simpleast.markdown.MarkdownRules
+import com.materii.simplerast.code.CodeRules
+import com.materii.simplerast.code.CodeStyleProviders
+import com.materii.simplerast.core.node.Node
+import com.materii.simplerast.core.node.StyleNode
+import com.materii.simplerast.core.parser.ParseSpec
+import com.materii.simplerast.core.parser.Parser
+import com.materii.simplerast.core.parser.Rule
+import com.materii.simplerast.markdown.MarkdownRules
 import com.discord.simpleast.sample.spans.BlockBackgroundNode
 import com.discord.simpleast.sample.spans.VerticalMarginSpan
 import java.util.regex.Matcher
@@ -47,16 +47,23 @@ object CustomMarkdownRules {
 
     return listOf(
         MarkdownRules.HeaderRule(::spanProvider),
-        MarkdownRules.HeaderLineClassedRule(::spanProvider) { className ->
-          @Suppress("IMPLICIT_CAST_TO_ANY")
-          when (className) {
-            "add" -> TextAppearanceSpan(context, classStyles[0])
-            "remove" -> TextAppearanceSpan(context, classStyles[1])
-            "fix" -> TextAppearanceSpan(context, classStyles[2])
-            "marginTop" -> VerticalMarginSpan(topPx = marginTopPx, bottomPx = 0)
-            else -> null
-          }
-        }
+        MarkdownRules.HeaderLineClassedRule(
+          styleSpanProvider = ::spanProvider,
+          classSpanProvider = { className ->
+            @Suppress("IMPLICIT_CAST_TO_ANY")
+            when (className) {
+              "add" -> TextAppearanceSpan(context, classStyles[0])
+              "remove" -> TextAppearanceSpan(context, classStyles[1])
+              "fix" -> TextAppearanceSpan(context, classStyles[2])
+              "marginTop" -> VerticalMarginSpan(topPx = marginTopPx, bottomPx = 0)
+              else -> null
+            }
+          },
+          boldStyleProvider = { BulletSpan() },
+          italicsStyleProvider = { StyleSpan(Typeface.ITALIC) },
+          strikethroughStyleProvider = { StrikethroughSpan() },
+          underlineStyleProvider = { UnderlineSpan() }
+        )
     )
   }
 
@@ -75,7 +82,7 @@ object CustomMarkdownRules {
      */
     private val PATTERN_BLOCK_QUOTE = Pattern.compile("^(?: *>>> ?(.+)| *>(?!>>) ?([^\\n]+\\n?))", Pattern.DOTALL)
 
-    class BlockQuoteNode<RC> : StyleNode<RC, Any>(listOf(
+    class BlockQuoteNode<RC> : StyleNode<RC>(listOf(
         LeadingMarginSpan.Standard(40), BackgroundColorSpan(Color.GRAY)))
 
     // Use a block rule to ensure we only match at the beginning of a line.
@@ -111,7 +118,7 @@ object CustomMarkdownRules {
         languageMap
     ) { codeNode, block, state ->
       if (!block) {
-        StyleNode<RC, Any>(listOf(BackgroundColorSpan(Color.DKGRAY)))
+        StyleNode<RC>(listOf(BackgroundColorSpan(Color.DKGRAY)))
             .apply { addChild(codeNode) }
       } else {
         BlockBackgroundNode(state.isInQuote, codeNode)

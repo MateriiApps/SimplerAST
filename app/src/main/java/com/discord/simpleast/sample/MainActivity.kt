@@ -2,7 +2,6 @@ package com.discord.simpleast.sample
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -10,13 +9,15 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.discord.simpleast.R
 import androidx.lifecycle.lifecycleScope
-import com.discord.simpleast.core.node.Node
-import com.discord.simpleast.core.node.TextNode
-import com.discord.simpleast.core.parser.ParseSpec
-import com.discord.simpleast.core.parser.Parser
-import com.discord.simpleast.core.parser.Rule
-import com.discord.simpleast.core.simple.SimpleMarkdownRules
-import com.discord.simpleast.core.simple.SimpleRenderer
+import com.materii.simplerast.core.node.Node
+import com.materii.simplerast.core.node.TextNode
+import com.materii.simplerast.core.parser.ParseSpec
+import com.materii.simplerast.core.parser.Parser
+import com.materii.simplerast.core.parser.Rule
+import com.materii.simplerast.core.text.RichTextBuilder
+import com.materii.simplerast.core.simple.CoreMarkdownRules
+import com.materii.simplerast.view.TextViewMarkdown
+import com.materii.simplerast.view.TextViewRenderer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.regex.Matcher
@@ -37,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     parser = Parser<RenderContext, Node<RenderContext>, ParseState>()
         .addRules(
             // Allow callers to escape markdown commands such as code block ticks
-            SimpleMarkdownRules.createEscapeRule(),
+            CoreMarkdownRules.createEscapeRule(),
             UserMentionRule(),
             CustomMarkdownRules.createBlockQuoteRule())
         .addRules(CustomMarkdownRules.createMarkdownRules(
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         .addRules(
             CustomMarkdownRules.createCodeRule(this@MainActivity),
             CustomMarkdownRules.createCodeInlineRule(this@MainActivity))
-        .addRules(SimpleMarkdownRules.createSimpleMarkdownRules(includeEscapeRule = false))
+        .addRules(TextViewMarkdown.createMarkdownRules(includeEscapeRule = false))
 
     resultText = findViewById(R.id.result_text)
     input = findViewById(R.id.input)
@@ -87,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
   private fun parseInput() = lifecycleScope.launchWhenStarted {
     val renderedText = withContext(Dispatchers.IO) {
-      SimpleRenderer.render(
+      TextViewRenderer.render(
           source = input.text,
           parser = parser,
           initialState = ParseState(false),
@@ -99,7 +100,7 @@ class MainActivity : AppCompatActivity() {
 
   private fun testParse(times: Int) {
     for (i in 0 until times) {
-      SimpleRenderer.render(
+      TextViewRenderer.render(
           source = SampleTexts.BENCHMARK_TEXT.trimIndent(),
           parser = parser,
           initialState = ParseState(false),
@@ -117,7 +118,7 @@ class MainActivity : AppCompatActivity() {
   data class RenderContext(val usernameMap: Map<Int, String>)
 
   class UserNode(private val userId: Int) : Node<RenderContext>() {
-    override fun render(builder: SpannableStringBuilder, renderContext: RenderContext) {
+    override fun render(builder: RichTextBuilder, renderContext: RenderContext) {
       builder.append(renderContext.usernameMap[userId] ?: "Invalid User")
     }
   }

@@ -4,12 +4,12 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
-import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.LeadingMarginSpan
 import android.text.style.LineBackgroundSpan
 import androidx.annotation.ColorInt
-import com.discord.simpleast.core.node.Node
+import com.materii.simplerast.core.node.Node
+import com.materii.simplerast.core.text.RichTextBuilder
 
 /**
  * Creates a block background for code sections.
@@ -18,7 +18,7 @@ class BlockBackgroundNode<R>(
     private val inQuote: Boolean, vararg children: Node<R>
 ): Node.Parent<R>(*children) {
 
-  override fun render(builder: SpannableStringBuilder, renderContext: R) {
+  override fun render(builder: RichTextBuilder, renderContext: R) {
     // Ensure the block we want to append starts on a newline.
     ensureEndsWithNewline(builder)
 
@@ -35,24 +35,22 @@ class BlockBackgroundNode<R>(
         strokeRadius = 15,
         leftMargin = if (inQuote) 40 else 0
     )
-    builder.setSpan(
+    builder.setStyle(
         backgroundSpan,
         codeStartIndex,
         builder.length,
-        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
     )
 
     // Apply a leading margin to all lines in the block.
     val leadingMarginSpan = LeadingMarginSpan.Standard(15)
-    builder.setSpan(
+    builder.setStyle(
         leadingMarginSpan,
         codeStartIndex,
         builder.length,
-        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
     )
   }
 
-  private fun ensureEndsWithNewline(builder: SpannableStringBuilder) {
+  private fun ensureEndsWithNewline(builder: RichTextBuilder) {
     if (builder.isNotEmpty()) {
       val lastChar = CharArray(6)
       builder.getChars(builder.length - 1, builder.length, lastChar, 0)
