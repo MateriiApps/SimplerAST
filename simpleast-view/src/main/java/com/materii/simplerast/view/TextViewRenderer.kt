@@ -1,5 +1,6 @@
 package com.materii.simplerast.view
 
+import android.text.SpannableStringBuilder
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.materii.simplerast.core.node.Node
@@ -53,12 +54,12 @@ object TextViewRenderer {
         parser: Parser<RC, Node<RC>, S>,
         initialState: S,
         renderContext: RC
-    ): SpannableRichTextBuilder {
+    ): SpannableStringBuilder {
         return CoreRenderer.render(
             SpannableRichTextBuilder(),
             parser.parse(source, initialState),
             renderContext
-        )
+        ).builder
     }
 
 }
