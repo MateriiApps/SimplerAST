@@ -1,7 +1,6 @@
 package com.materii.simplerast.view
 
 import android.graphics.Typeface
-import android.text.style.BulletSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
@@ -18,7 +17,7 @@ object TextViewMarkdown {
         return CoreMarkdownRules.createCoreMarkdownRules(
             includeTextRule = includeTextRule,
             includeEscapeRule = includeEscapeRule,
-            boldStyleProvider = { BulletSpan() },
+            boldStyleProvider = { StyleSpan(Typeface.BOLD) },
             italicsStyleProvider = { StyleSpan(Typeface.ITALIC) },
             strikethroughStyleProvider = { StrikethroughSpan() },
             underlineStyleProvider = { UnderlineSpan() }

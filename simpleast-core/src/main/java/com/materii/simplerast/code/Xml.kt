@@ -5,6 +5,7 @@ import com.materii.simplerast.core.parser.ParseSpec
 import com.materii.simplerast.core.parser.Parser
 import com.materii.simplerast.core.parser.Rule
 import com.materii.simplerast.core.text.RichTextBuilder
+import com.materii.simplerast.core.text.StyleInclusion
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -34,16 +35,16 @@ object Xml {
             var startIndex = builder.length
             builder.append("<$name")
             typeStylesProvider(renderContext).forEach {
-                builder.setStyle(it, startIndex, builder.length)
+                builder.setStyle(it, startIndex, builder.length, StyleInclusion.ExclusiveExclusive)
             }
 
             startIndex = builder.length
             builder.append("$remainder>")
             codeStyleProviders.paramsStyleProvider.get(renderContext).forEach {
-                builder.setStyle(it, startIndex, builder.length - 1)
+                builder.setStyle(it, startIndex, builder.length - 1, StyleInclusion.ExclusiveExclusive)
             }
             typeStylesProvider(renderContext).forEach {
-                builder.setStyle(it, builder.length - 1, builder.length)
+                builder.setStyle(it, builder.length - 1, builder.length, StyleInclusion.ExclusiveExclusive)
             }
 
             super.render(builder, renderContext)
@@ -52,7 +53,7 @@ object Xml {
                 startIndex = builder.length
                 builder.append("</$closing>")
                 typeStylesProvider(renderContext).forEach {
-                    builder.setStyle(it, startIndex + 1, builder.length)
+                    builder.setStyle(it, startIndex + 1, builder.length, StyleInclusion.ExclusiveExclusive)
                 }
             }
         }

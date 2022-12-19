@@ -1,6 +1,7 @@
 package com.materii.simplerast.core.node
 
 import com.materii.simplerast.core.text.RichTextBuilder
+import com.materii.simplerast.core.text.StyleInclusion
 import org.jetbrains.annotations.TestOnly
 
 /**
@@ -15,7 +16,9 @@ open class StyleNode<RC>(val styles: List<Any>) : Node.Parent<RC>() {
         // First render all child nodes, as these are the nodes we want to apply the styles to.
         super.render(builder, renderContext)
 
-        styles.forEach { builder.setStyle(it, startIndex, builder.length) }
+        styles.forEach {
+            builder.setStyle(it, startIndex, builder.length, StyleInclusion.ExclusiveExclusive)
+        }
     }
 
     fun interface SpanProvider<RC> {
@@ -35,7 +38,7 @@ open class StyleNode<RC>(val styles: List<Any>) : Node.Parent<RC>() {
             super.render(builder, renderContext)
 
             stylesProvider.get(renderContext).forEach {
-                builder.setStyle(it, startIndex, builder.length)
+                builder.setStyle(it, startIndex, builder.length, StyleInclusion.ExclusiveExclusive)
             }
         }
     }

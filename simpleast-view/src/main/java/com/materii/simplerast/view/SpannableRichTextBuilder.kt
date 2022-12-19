@@ -3,6 +3,7 @@ package com.materii.simplerast.view
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import com.materii.simplerast.core.text.RichTextBuilder
+import com.materii.simplerast.core.text.StyleInclusion
 
 class SpannableRichTextBuilder : RichTextBuilder {
 
@@ -17,11 +18,17 @@ class SpannableRichTextBuilder : RichTextBuilder {
     }
 
     override fun insert(where: Int, text: CharSequence) {
-        builder.insert(where, text)
+        builder.insert(where, if (text is SpannableRichTextBuilder) text.builder else text)
     }
 
-    override fun setStyle(style: Any, start: Int, end: Int) {
-        builder.setSpan(style, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    override fun setStyle(style: Any, start: Int, end: Int, inclusion: StyleInclusion) {
+        val spannableInclusion = when (inclusion) {
+            StyleInclusion.InclusiveInclusive -> Spanned.SPAN_INCLUSIVE_INCLUSIVE
+            StyleInclusion.InclusiveExclusive -> Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+            StyleInclusion.ExclusiveInclusive -> Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+            StyleInclusion.ExclusiveExclusive -> Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        }
+        builder.setSpan(style, start, end, spannableInclusion)
     }
 
     override fun getChars(start: Int, end: Int, destination: CharArray, offset: Int) {
@@ -38,6 +45,5 @@ class SpannableRichTextBuilder : RichTextBuilder {
     override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {
         return builder.subSequence(startIndex, endIndex)
     }
-
 
 }

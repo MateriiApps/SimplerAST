@@ -8,6 +8,7 @@ import com.materii.simplerast.core.parser.Parser
 import com.materii.simplerast.core.parser.Rule
 import com.materii.simplerast.core.simple.CoreMarkdownRules
 import com.materii.simplerast.core.text.RichTextBuilder
+import com.materii.simplerast.core.text.StyleInclusion
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -312,7 +313,8 @@ object CodeRules {
         languageMap: Map<String, List<Rule<RC, Node<RC>, S>>>,
         wrapperNodeProvider: (CodeNode<RC>, Boolean, S) -> Node<RC> =
             @Suppress("UNUSED_ANONYMOUS_PARAMETER")
-            { codeNode, startsWithNewline, state -> codeNode }
+            { codeNode, startsWithNewline, state -> codeNode },
+        richTextFactory: () -> RichTextBuilder
     ): Rule<RC, Node<RC>, S> {
         return object : Rule<RC, Node<RC>, S>(PATTERN_CODE_BLOCK) {
             override fun parse(matcher: Matcher, parser: Parser<RC, in Node<RC>, S>, state: S)
@@ -329,7 +331,7 @@ object CodeRules {
                     CodeNode.Content.Parsed(codeBody, children)
                 } ?: CodeNode.Content.Raw(codeBody)
 
-                val codeNode = CodeNode<RC>(content, language, textStyleProvider)
+                val codeNode = CodeNode(content, language, textStyleProvider, richTextFactory)
                 return ParseSpec.createTerminal(
                     wrapperNodeProvider(
                         codeNode,
@@ -344,6 +346,7 @@ object CodeRules {
     fun <RC, S> createInlineCodeRule(
         textStyleProvider: StyleNode.SpanProvider<RC>,
         bgStyleProvider: StyleNode.SpanProvider<RC>,
+        richTextFactory: () -> RichTextBuilder
     ): Rule<RC, Node<RC>, S> {
         return object : Rule<RC, Node<RC>, S>(PATTERN_CODE_INLINE) {
             override fun parse(matcher: Matcher, parser: Parser<RC, in Node<RC>, S>, state: S)
@@ -355,14 +358,14 @@ object CodeRules {
 
                 val content = CodeNode.Content.Raw(codeBody)
 
-                val codeNode = CodeNode<RC>(content, null, textStyleProvider)
+                val codeNode = CodeNode(content, null, textStyleProvider, richTextFactory)
                 // We can't use a StyleNode here as we can't share background spans.
                 val node = object : Node.Parent<RC>(codeNode) {
                     override fun render(builder: RichTextBuilder, renderContext: RC) {
                         val startIndex = builder.length
                         super.render(builder, renderContext)
                         bgStyleProvider.get(renderContext).forEach {
-                            builder.setStyle(it, startIndex, builder.length)
+                            builder.setStyle(it, startIndex, builder.length, StyleInclusion.ExclusiveExclusive)
                         }
                     }
                 }

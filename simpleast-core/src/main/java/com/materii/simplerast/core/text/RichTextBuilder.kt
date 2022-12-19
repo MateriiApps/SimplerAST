@@ -1,8 +1,15 @@
 package com.materii.simplerast.core.text
 
+enum class StyleInclusion {
+    InclusiveInclusive,
+    InclusiveExclusive,
+    ExclusiveInclusive,
+    ExclusiveExclusive
+}
+
 interface RichTextBuilder : CharSequence {
 
-    fun setStyle(style: Any, start: Int, end: Int)
+    fun setStyle(style: Any, start: Int, end: Int, inclusion: StyleInclusion)
 
     fun append(text: CharSequence)
 

@@ -16,6 +16,7 @@ import com.materii.simplerast.core.parser.ParseSpec
 import com.materii.simplerast.core.parser.Parser
 import com.materii.simplerast.core.parser.Rule
 import com.materii.simplerast.markdown.MarkdownRules
+import com.materii.simplerast.view.SpannableRichTextBuilder
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -200,21 +201,28 @@ object CustomMarkdownRules {
 
         return CodeRules.createCodeRule(
             codeStyleProviders.defaultStyleProvider,
-            languageMap
-        ) { codeNode, block, state ->
-            if (!block) {
-                StyleNode<RC>(listOf(BackgroundColorSpan(Color.DKGRAY)))
-                    .apply { addChild(codeNode) }
-            } else {
-                BlockBackgroundNode(state.isInQuote, codeNode)
+            languageMap,
+            wrapperNodeProvider = { codeNode, block, state ->
+                if (!block) {
+                    StyleNode<RC>(listOf(BackgroundColorSpan(Color.DKGRAY)))
+                        .apply { addChild(codeNode) }
+                } else {
+                    BlockBackgroundNode(state.isInQuote, codeNode)
+                }
+            },
+            richTextFactory = {
+                SpannableRichTextBuilder()
             }
-        }
+        )
     }
 
     fun <RC, S : BlockQuoteState<S>> createCodeInlineRule(context: Context): Rule<RC, Node<RC>, S> {
         return CodeRules.createInlineCodeRule(
             { listOf(TextAppearanceSpan(context, R.style.Code_TextAppearance)) },
             { listOf(BackgroundColorSpan(Color.DKGRAY)) },
+            richTextFactory = {
+                SpannableRichTextBuilder()
+            }
         )
     }
 }
