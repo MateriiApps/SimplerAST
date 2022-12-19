@@ -19,42 +19,47 @@ import com.materii.simplerast.core.node.Node
  *          the state back to the parser.
  */
 class ParseSpec<RC, S> {
-  val root: Node<RC>
-  val isTerminal: Boolean
-  val state: S
-  var startIndex: Int = 0
-  var endIndex: Int = 0
+    val root: Node<RC>
+    val isTerminal: Boolean
+    val state: S
+    var startIndex: Int = 0
+    var endIndex: Int = 0
 
-  constructor(root: Node<RC>, state: S, startIndex: Int, endIndex: Int) {
-    this.root = root
-    this.state = state
-    this.isTerminal = false
-    this.startIndex = startIndex
-    this.endIndex = endIndex
-  }
-
-  constructor(root: Node<RC>, state: S) {
-    this.root = root
-    this.state = state
-    this.isTerminal = true
-  }
-
-  fun applyOffset(offset: Int) {
-    startIndex += offset
-    endIndex += offset
-  }
-
-  companion object {
-
-    @JvmStatic
-    fun <RC, S> createNonterminal(node: Node<RC>, state: S, startIndex: Int, endIndex: Int): ParseSpec<RC, S> {
-      return ParseSpec(node, state, startIndex, endIndex)
+    constructor(root: Node<RC>, state: S, startIndex: Int, endIndex: Int) {
+        this.root = root
+        this.state = state
+        this.isTerminal = false
+        this.startIndex = startIndex
+        this.endIndex = endIndex
     }
 
-    @JvmStatic
-    fun <RC, S> createTerminal(node: Node<RC>, state: S): ParseSpec<RC, S> {
-      return ParseSpec(node, state)
+    constructor(root: Node<RC>, state: S) {
+        this.root = root
+        this.state = state
+        this.isTerminal = true
     }
-  }
+
+    fun applyOffset(offset: Int) {
+        startIndex += offset
+        endIndex += offset
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun <RC, S> createNonterminal(
+            node: Node<RC>,
+            state: S,
+            startIndex: Int,
+            endIndex: Int
+        ): ParseSpec<RC, S> {
+            return ParseSpec(node, state, startIndex, endIndex)
+        }
+
+        @JvmStatic
+        fun <RC, S> createTerminal(node: Node<RC>, state: S): ParseSpec<RC, S> {
+            return ParseSpec(node, state)
+        }
+    }
 }
 

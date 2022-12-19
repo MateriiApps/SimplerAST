@@ -3,13 +3,13 @@ package com.discord.simpleast.sample
 @Suppress("MemberVisibilityCanBePrivate")
 object SampleTexts {
 
-  const val TEXT = """
+    const val TEXT = """
     Some really long **introduction** text that goes on **__forever__** explaining __something__.
   
     single `newline` above. `test` sentence
   """
 
-  const val HEADERS = """
+    const val HEADERS = """
     Alt. __H1__ title
     =======
     stuff
@@ -32,7 +32,7 @@ object SampleTexts {
     * friend of a friend
   """
 
-  const val QUOTES = """
+    const val QUOTES = """
     Want to test quotes?
     
     > Quoted
@@ -46,7 +46,7 @@ object SampleTexts {
     Still quoted
   """
 
-  private const val CODE_BLOCK_KOTLIN = """
+    private const val CODE_BLOCK_KOTLIN = """
     Kotlin code block:
     ```kt
     object CodeRules {
@@ -73,7 +73,7 @@ object SampleTexts {
     ```
   """
 
-  private const val CODE_BLOCK_PROTO_BUFFERS = """
+    private const val CODE_BLOCK_PROTO_BUFFERS = """
     ProtoBuffers code block:
     ```pb
     package com.discord.test
@@ -118,7 +118,7 @@ object SampleTexts {
     ```
   """
 
-  private const val CODE_BLOCK_PYTHON = """
+    private const val CODE_BLOCK_PYTHON = """
     Python code block:
     ```py
     from com.discord import test
@@ -141,7 +141,7 @@ object SampleTexts {
     ```
   """
 
-  private const val CODE_BLOCK_RUST = """
+    private const val CODE_BLOCK_RUST = """
     Rust code block:
     ```rs
     mod test {
@@ -169,7 +169,7 @@ object SampleTexts {
     ```
   """
 
-  private const val CODE_BLOCK_SQL = """
+    private const val CODE_BLOCK_SQL = """
     ```sql
     SELECT name
     from Users as u
@@ -180,7 +180,7 @@ object SampleTexts {
     ```
   """
 
-  private const val CODE_BLOCK_XML = """
+    private const val CODE_BLOCK_XML = """
     XML code block:
     ```xml
     <!--
@@ -197,7 +197,7 @@ object SampleTexts {
     ```
   """
 
-  private const val CODE_BLOCK_CRYSTAL = """
+    private const val CODE_BLOCK_CRYSTAL = """
     Crystal code block:
     ```cr    
     regex = /\bs|d\b/i
@@ -228,8 +228,8 @@ object SampleTexts {
     end
     ```
   """
-  
-  private const val CODE_BLOCK_JAVASCRIPT = """
+
+    private const val CODE_BLOCK_JAVASCRIPT = """
     JavaScript code block:
     ```js
     const { performance } = require('perf_hooks');
@@ -254,8 +254,8 @@ object SampleTexts {
     console.log(`Took ${'$'}{timer} ms`);
     ```
   """
-  
-  private const val CODE_BLOCK_TYPESCRIPT = """
+
+    private const val CODE_BLOCK_TYPESCRIPT = """
     TypeScript code block:
     ```ts
     import { inspect } from 'util';
@@ -297,7 +297,7 @@ object SampleTexts {
     ```
   """
 
-  private const val CODE_BLOCK_DIFF = """
+    private const val CODE_BLOCK_DIFF = """
     Diff code block:
     ```diff
     - "This car is amzing!"
@@ -309,7 +309,7 @@ object SampleTexts {
     ```
   """
 
-  const val CODE_BLOCKS = """
+    const val CODE_BLOCKS = """
     # Code block samples
     inlined:```py language code blocks need newline```
     inlined:```kt 
@@ -332,7 +332,7 @@ object SampleTexts {
   """
 
 
-  const val BENCHMARK_TEXT = """
+    const val BENCHMARK_TEXT = """
     Test __Inner **nested** rules__ as well as *look ahead* rules
     ==========
   
@@ -361,7 +361,7 @@ object SampleTexts {
      (caused by ValueError("unknown url type: '/yts/jsbin/player-en_US-vflkk7pUE/base.js'",))
    """
 
-  const val ALL = """
+    const val ALL = """
     $TEXT
     $HEADERS
     $CODE_BLOCKS

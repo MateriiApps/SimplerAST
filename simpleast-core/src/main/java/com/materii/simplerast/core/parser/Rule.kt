@@ -18,35 +18,39 @@ import java.util.regex.Pattern
  */
 abstract class Rule<RC, T : Node<RC>, S>(val matcher: Matcher) {
 
-  constructor(pattern: Pattern) : this(pattern.matcher(""))
+    constructor(pattern: Pattern) : this(pattern.matcher(""))
 
-  /**
-   * Used to determine if the [Rule] applies to the [inspectionSource].
-   *
-   * @param inspectionSource Source string to apply the rule
-   * @param lastCapture Last captured source occuring before [inspectionSource]
-   *
-   * @return a [Matcher] if the rule applies, else null
-   */
-  open fun match(inspectionSource: CharSequence, lastCapture: String?, state: S): Matcher? {
-    matcher.reset(inspectionSource)
-    return if (matcher.find()) matcher else null
-  }
-
-  abstract fun parse(matcher: Matcher, parser: Parser<RC, in T, S>, state: S): ParseSpec<RC, S>
-
-  /**
-   * A [Rule] that ensures that the [matcher] is only executed if the preceding capture was a newline.
-   * e.g. this ensures that the regex parses from a newline.
-   */
-  abstract class BlockRule<RC, T : Node<RC, >, S>(pattern: Pattern) : Rule<RC, T, S>(pattern) {
-
-    override fun match(inspectionSource: CharSequence, lastCapture: String?, state: S): Matcher? {
-      if (lastCapture?.endsWith('\n') != false) {
-        return super.match(inspectionSource, lastCapture, state)
-      }
-      return null
+    /**
+     * Used to determine if the [Rule] applies to the [inspectionSource].
+     *
+     * @param inspectionSource Source string to apply the rule
+     * @param lastCapture Last captured source occuring before [inspectionSource]
+     *
+     * @return a [Matcher] if the rule applies, else null
+     */
+    open fun match(inspectionSource: CharSequence, lastCapture: String?, state: S): Matcher? {
+        matcher.reset(inspectionSource)
+        return if (matcher.find()) matcher else null
     }
-  }
+
+    abstract fun parse(matcher: Matcher, parser: Parser<RC, in T, S>, state: S): ParseSpec<RC, S>
+
+    /**
+     * A [Rule] that ensures that the [matcher] is only executed if the preceding capture was a newline.
+     * e.g. this ensures that the regex parses from a newline.
+     */
+    abstract class BlockRule<RC, T : Node<RC>, S>(pattern: Pattern) : Rule<RC, T, S>(pattern) {
+
+        override fun match(
+            inspectionSource: CharSequence,
+            lastCapture: String?,
+            state: S
+        ): Matcher? {
+            if (lastCapture?.endsWith('\n') != false) {
+                return super.match(inspectionSource, lastCapture, state)
+            }
+            return null
+        }
+    }
 }
 

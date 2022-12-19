@@ -9,29 +9,30 @@ import com.materii.simplerast.core.text.RichTextBuilder
  */
 open class Node<RC>(private var children: MutableCollection<Node<RC>>? = null) {
 
-  fun getChildren(): Collection<Node<RC>>? = children
+    fun getChildren(): Collection<Node<RC>>? = children
 
-  fun hasChildren(): Boolean = children?.isNotEmpty() == true
+    fun hasChildren(): Boolean = children?.isNotEmpty() == true
 
-  fun addChild(child: Node<RC>) {
-    children = (children ?: ArrayList()).apply {
-      add(child)
-    }
-  }
-
-  open fun render(builder: RichTextBuilder, renderContext: RC) {}
-
-  /**
-   * Wrapper around [Node] which simply renders all children.
-   */
-  open class Parent<RC>(vararg children: Node<RC>?) : Node<RC>(children.mapNotNull { it }.toMutableList()) {
-    override fun render(builder: RichTextBuilder, renderContext: RC) {
-      getChildren()?.forEach { it.render(builder, renderContext) }
+    fun addChild(child: Node<RC>) {
+        children = (children ?: ArrayList()).apply {
+            add(child)
+        }
     }
 
-    override fun toString() = "${javaClass.simpleName} >\n" +
-      getChildren()?.joinToString("\n->", prefix = ">>", postfix = "\n>|") {
-        it.toString()
-      }
-  }
+    open fun render(builder: RichTextBuilder, renderContext: RC) {}
+
+    /**
+     * Wrapper around [Node] which simply renders all children.
+     */
+    open class Parent<RC>(vararg children: Node<RC>?) :
+        Node<RC>(children.mapNotNull { it }.toMutableList()) {
+        override fun render(builder: RichTextBuilder, renderContext: RC) {
+            getChildren()?.forEach { it.render(builder, renderContext) }
+        }
+
+        override fun toString() = "${javaClass.simpleName} >\n" +
+            getChildren()?.joinToString("\n->", prefix = ">>", postfix = "\n>|") {
+                it.toString()
+            }
+    }
 }

@@ -38,7 +38,13 @@ object TextViewRenderer {
         initialState: S,
         renderContext: RC
     ): SpannableRichTextBuilder {
-        return CoreRenderer.render(SpannableRichTextBuilder(), source, rules, initialState, renderContext)
+        return CoreRenderer.render(
+            SpannableRichTextBuilder(),
+            source,
+            rules,
+            initialState,
+            renderContext
+        )
     }
 
     @JvmStatic
@@ -48,7 +54,11 @@ object TextViewRenderer {
         initialState: S,
         renderContext: RC
     ): SpannableRichTextBuilder {
-        return CoreRenderer.render(SpannableRichTextBuilder(), parser.parse(source, initialState), renderContext)
+        return CoreRenderer.render(
+            SpannableRichTextBuilder(),
+            parser.parse(source, initialState),
+            renderContext
+        )
     }
 
 }
